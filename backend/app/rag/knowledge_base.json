@@ -1,0 +1,336 @@
+{
+  "rag_schema_version": "3.0.0",
+  "knowledge_base_id": "synthetic_data_studio_rag",
+  "name": "Synthetic Data Studio Universal Generation Knowledge Base",
+  "description": "A production-oriented Retrieval-Augmented Generation knowledge base for discovering, understanding, planning, generating, validating and improving synthetic datasets across domains, data modalities and generation strategies.",
+
+  "supported_modalities": [
+    "text",
+    "table",
+    "timeseries",
+    "image",
+    "audio",
+    "video",
+    "code",
+    "log",
+    "graph",
+    "geospatial",
+    "multimodal"
+  ],
+
+  "supported_dataset_types": [
+    "tabular",
+    "classification",
+    "regression",
+    "time_series",
+    "transactional",
+    "event_log",
+    "graph",
+    "relational",
+    "hierarchical",
+    "document",
+    "conversation",
+    "question_answer",
+    "code",
+    "image_metadata",
+    "multimodal"
+  ],
+
+  "ingestion_config": {
+    "canonicalization": {
+      "unicode_normalization": "NFC",
+      "date_format": "ISO_8601",
+      "language_standard": "BCP-47",
+      "unit_normalization": true,
+      "entity_canonicalization": true
+    },
+    "deduplication": {
+      "enabled": true,
+      "exact_duplicate_detection": "content_hash",
+      "near_duplicate_detection": true,
+      "preserve_provenance": true
+    },
+    "chunking": {
+      "strategy": "structure_aware",
+      "semantic_boundaries": true,
+      "target_tokens": 400,
+      "minimum_tokens": 200,
+      "maximum_tokens": 600,
+      "overlap_percentage": 15,
+      "rules": {
+        "documents": "split_by_heading_paragraph_and_semantic_boundary",
+        "tables": "preserve_schema_and_keep_rows_intact",
+        "time_series": "chunk_by_time_window",
+        "code": "chunk_by_function_class_or_module",
+        "logs": "chunk_by_event_window",
+        "graphs": "chunk_by_subgraph_or_entity_neighborhood"
+      }
+    },
+    "privacy_processing": {
+      "detect_pii": true,
+      "detect_phi": true,
+      "redact_before_embedding": true,
+      "store_raw_sensitive_data": false,
+      "sensitivity_classification": true
+    }
+  },
+
+  "retrieval_config": {
+    "strategy": "hybrid_two_stage",
+    "stage_1": {
+      "dense_retrieval": true,
+      "sparse_retrieval": true,
+      "metadata_filtering": true,
+      "candidate_count": 50,
+      "fusion_method": "reciprocal_rank_fusion"
+    },
+    "stage_2": {
+      "reranking": true,
+      "reranker_type": "cross_encoder",
+      "final_top_k": 8
+    },
+    "ranking_signals": {
+      "semantic_relevance": 0.4,
+      "keyword_relevance": 0.15,
+      "domain_match": 0.1,
+      "dataset_type_match": 0.1,
+      "trust_score": 0.1,
+      "freshness_score": 0.05,
+      "generation_utility": 0.1
+    },
+    "context_assembly": {
+      "deduplicate_context": true,
+      "prefer_diverse_evidence": true,
+      "preserve_parent_child_relationships": true,
+      "semantic_compression": true,
+      "maximum_context_tokens": 12000
+    }
+  },
+
+  "embedding_config": {
+    "store_vectors_in_json": false,
+    "store_embedding_reference": true,
+    "default_distance_metric": "cosine",
+    "embedding_profiles": {
+      "general": {
+        "use_for": ["general_domain_knowledge", "dataset_templates", "business_rules"]
+      },
+      "finance": {
+        "use_for": ["financial_reports", "transactions", "risk_data"]
+      },
+      "healthcare": {
+        "use_for": ["clinical_notes", "medical_codes", "ehr"]
+      },
+      "code": {
+        "use_for": ["source_code", "schemas", "generation_scripts"]
+      },
+      "multimodal": {
+        "use_for": ["images", "image_text_pairs", "audio", "video"]
+      }
+    }
+  },
+
+  "knowledge_collections": {
+    "domain_profiles": [
+      {
+        "id": "domain_ecommerce",
+        "record_type": "domain_profile",
+        "domain": "E-Commerce",
+        "subdomains": ["retail", "marketplace", "subscriptions", "digital_goods", "food_delivery"],
+        "common_entities": ["customer", "product", "category", "seller", "cart", "order", "order_item", "payment", "shipment", "refund", "review"],
+        "common_dataset_types": ["transactional", "relational", "customer_analytics", "product_catalog", "review_dataset"],
+        "common_data_patterns": ["customer_behavior_is_skewed", "repeat_purchase_behavior", "category_preferences", "seasonality", "price_distributions_are_right_skewed"],
+        "keywords": ["ecommerce", "shopping", "product", "customer", "order", "payment", "transaction"],
+        "retrieval_text": "E-commerce datasets commonly involve customers, products, orders, payments, shipments, refunds and reviews. Realistic generation requires referential integrity, repeat customer behavior, product category preferences, non-uniform order values and temporal patterns."
+      },
+      {
+        "id": "domain_finance",
+        "record_type": "domain_profile",
+        "domain": "Finance",
+        "subdomains": ["banking", "payments", "insurance", "investment", "fraud_detection"],
+        "common_entities": ["customer", "account", "transaction", "merchant", "instrument", "risk_event"],
+        "common_dataset_types": ["transactional", "time_series", "fraud_detection", "risk_modeling"],
+        "domain_constraints": ["financial_identifiers_require_validation", "transaction_amounts_are_non_negative", "timestamps_follow_event_order", "fraud_is_usually_rare"],
+        "keywords": ["finance", "banking", "credit card", "fraud", "transaction", "merchant", "risk"],
+        "retrieval_text": "Financial synthetic data requires strong numerical consistency, class imbalance for fraud, temporal ordering, valid transaction relationships and strict handling of sensitive identifiers."
+      },
+      {
+        "id": "domain_healthcare",
+        "record_type": "domain_profile",
+        "domain": "Healthcare",
+        "subdomains": ["ehr", "clinical_trials", "hospital_operations", "medical_imaging_metadata"],
+        "common_entities": ["patient", "encounter", "diagnosis", "medication", "lab_result", "procedure", "provider"],
+        "common_dataset_types": ["tabular", "relational", "clinical_text", "time_series"],
+        "generation_requirements": ["medical_consistency", "privacy_protection", "age_condition_relationships", "measurement_ranges", "code_validation"],
+        "keywords": ["healthcare", "patient", "medical", "clinical", "ehr", "diagnosis", "blood pressure"],
+        "retrieval_text": "Healthcare synthetic data should preserve clinically plausible relationships while avoiding real patient information. Diagnoses, measurements, age, treatment and event sequences must remain internally consistent."
+      },
+      {
+        "id": "domain_iot",
+        "record_type": "domain_profile",
+        "domain": "Manufacturing & IoT",
+        "subdomains": ["industrial_iot", "predictive_maintenance", "sensor_networks", "machine_logs"],
+        "common_entities": ["device", "sensor", "machine", "measurement", "maintenance_event", "failure_event"],
+        "common_dataset_types": ["time_series", "event_log", "sensor_data"],
+        "keywords": ["iot", "sensor", "telemetry", "machine", "temperature", "vibration", "rpm"],
+        "retrieval_text": "IoT datasets require temporal continuity, sensor correlation, realistic noise, seasonality or operating cycles, missing readings, spikes and progressive failure patterns."
+      },
+      {
+        "id": "domain_education",
+        "record_type": "domain_profile",
+        "domain": "Education",
+        "subdomains": ["student_analytics", "assessment", "learning_management", "online_courses"],
+        "common_entities": ["student", "course", "assessment", "submission", "attendance", "instructor"],
+        "common_dataset_types": ["tabular", "relational", "time_series", "question_answer"],
+        "keywords": ["student", "academic", "education", "grade", "gpa", "course", "attendance"],
+        "retrieval_text": "Educational datasets can model students, courses, assessments and performance. Scores, attendance, engagement and progression may contain meaningful correlations and longitudinal dependencies."
+      },
+      {
+        "id": "domain_hr",
+        "record_type": "domain_profile",
+        "domain": "HR & Workforce",
+        "subdomains": ["workforce_analytics", "payroll", "performance", "recruitment"],
+        "common_entities": ["employee", "department", "job_role", "salary", "performance_review"],
+        "common_dataset_types": ["tabular", "classification"],
+        "keywords": ["hr", "employee", "attrition", "workforce", "turnover", "salary", "department"],
+        "retrieval_text": "HR workforce datasets involve employee profiles, job titles, departments, compensation, performance reviews, and tenure. Realistic generation requires sensible salary ranges by role and non-uniform attrition rates."
+      }
+    ],
+
+    "dataset_templates": [
+      {
+        "id": "template_relational_commerce",
+        "record_type": "dataset_template",
+        "title": "Relational E-Commerce Transactions",
+        "domain": "E-Commerce",
+        "dataset_type": "relational",
+        "entities": [
+          {"name": "customers", "primary_key": "customer_id"},
+          {"name": "orders", "primary_key": "order_id", "foreign_keys": [{"field": "customer_id", "references": "customers.customer_id"}]},
+          {"name": "order_items", "primary_key": "order_item_id", "foreign_keys": [{"field": "order_id", "references": "orders.order_id"}, {"field": "product_id", "references": "products.product_id"}]}
+        ],
+        "generation_order": ["customers", "products", "orders", "order_items", "payments", "shipments"],
+        "keywords": ["ecommerce", "relational", "orders", "customers", "products", "cart"],
+        "retrieval_text": "Generate relational commerce datasets by creating parent entities first, then child entities. Preserve foreign-key integrity and derive order-level totals from order item values."
+      },
+      {
+        "id": "template_timeseries_sensor",
+        "record_type": "dataset_template",
+        "title": "Time-Series Industrial Sensor Telemetry",
+        "domain": "Manufacturing & IoT",
+        "dataset_type": "time_series",
+        "required_components": ["entity_identifier", "timestamp", "measurements"],
+        "generation_rules": ["timestamps_must_follow_requested_frequency", "adjacent_values_should_have_temporal_dependence", "noise_should_be_controlled", "anomalies_should_be_sparse_and_explainable"],
+        "keywords": ["iot", "sensor", "telemetry", "time_series", "vibration", "temperature", "rpm"],
+        "retrieval_text": "Time-series generation should not independently sample every row. Generate baseline behavior, temporal dependence, trend, seasonality where appropriate, noise and controlled anomalies."
+      },
+      {
+        "id": "template_text_classification",
+        "record_type": "dataset_template",
+        "title": "Text Classification & Sentiment Reviews",
+        "domain": "E-Commerce",
+        "dataset_type": "text_classification",
+        "required_components": ["text", "label"],
+        "generation_rules": ["text_must_semantically_support_label", "avoid_template_repetition", "vary_length_and_style", "include_boundary_cases", "control_class_balance"],
+        "keywords": ["review", "sentiment", "text classification", "rating", "feedback"],
+        "retrieval_text": "For synthetic text classification datasets, generate labels first or jointly constrain labels and text so semantic consistency is preserved. Include difficult and ambiguous examples where appropriate."
+      }
+    ],
+
+    "field_knowledge": [
+      {
+        "id": "field_primary_key",
+        "record_type": "field_definition",
+        "semantic_type": "primary_key",
+        "recommended_generators": ["uuid", "sequential", "prefixed_identifier"],
+        "constraints": ["unique", "non_null", "stable_format"],
+        "llm_generation": false,
+        "keywords": ["primary key", "id", "uuid", "identifier"],
+        "retrieval_text": "Primary keys should be generated algorithmically, must be unique and should not be generated independently by an LLM."
+      },
+      {
+        "id": "field_email",
+        "record_type": "field_definition",
+        "semantic_type": "email",
+        "recommended_generators": ["faker", "custom_pattern_generator"],
+        "validation": ["email_format", "uniqueness_when_required"],
+        "privacy": {"contains_pii": true, "synthetic_only": true, "never_copy_source_values": true},
+        "keywords": ["email", "contact", "pii"],
+        "retrieval_text": "Synthetic email fields should contain valid generated addresses using Faker and must not reproduce real source identities."
+      },
+      {
+        "id": "field_currency_amount",
+        "record_type": "field_definition",
+        "semantic_type": "currency_amount",
+        "recommended_generators": ["distribution_sampler", "conditional_sampler", "business_rule_engine"],
+        "common_distributions": ["log_normal", "gamma", "mixture_distribution"],
+        "constraints": ["non_negative", "currency_precision"],
+        "keywords": ["price", "amount", "salary", "revenue", "cost"],
+        "retrieval_text": "Currency amounts are often right-skewed. Use explicit statistical log-normal or conditional generation rather than unconstrained random values."
+      },
+      {
+        "id": "field_unstructured_text",
+        "record_type": "field_definition",
+        "semantic_type": "natural_language",
+        "recommended_generators": ["llm", "template_plus_llm", "retrieval_augmented_llm"],
+        "post_generation_validation": ["semantic_consistency", "duplicate_detection", "toxicity_check", "length_validation"],
+        "keywords": ["text", "review", "description", "comments", "notes"],
+        "retrieval_text": "Use LLM generation primarily for contextual or unstructured text. Constrain generation with retrieved domain knowledge and validate semantic consistency after generation."
+      }
+    ],
+
+    "distribution_knowledge": [
+      {
+        "id": "distribution_log_normal",
+        "record_type": "distribution_pattern",
+        "distribution": "log_normal",
+        "use_cases": ["income", "transaction_amount", "property_price", "duration"],
+        "characteristics": ["positive_values", "right_skewed", "long_tail"],
+        "keywords": ["log_normal", "skewed", "price distribution", "salary distribution"],
+        "retrieval_text": "Use log-normal distributions for financial amounts, salaries, transaction totals, and property prices to model realistic right-skewed long-tail distributions."
+      },
+      {
+        "id": "distribution_categorical",
+        "record_type": "distribution_pattern",
+        "distribution": "weighted_categorical",
+        "use_cases": ["class_labels", "departments", "statuses", "categories"],
+        "generation_rule": "Use explicit weights when realistic class frequencies are known or inferred.",
+        "keywords": ["categorical", "choices", "weighted", "labels"],
+        "retrieval_text": "Use explicit choices weights for categorical text fields like department, status, role, or category to ensure class balance realism."
+      }
+    ],
+
+    "generation_strategies": [
+      {
+        "id": "strategy_hybrid",
+        "record_type": "generation_strategy",
+        "title": "Hybrid Multi-Strategy Generation Engine",
+        "pipeline": [
+          "generate_schema",
+          "retrieve_domain_knowledge",
+          "plan_dependencies",
+          "generate_structured_fields",
+          "generate_statistical_fields",
+          "generate_llm_fields",
+          "apply_business_rules",
+          "validate"
+        ],
+        "keywords": ["hybrid", "generation strategy", "pipeline"],
+        "retrieval_text": "Hybrid generation is preferred for complex synthetic datasets because different field types require different generation mechanisms (Faker for PII, statistical samplers for amounts, algorithm for IDs, LLMs for text)."
+      }
+    ]
+  },
+
+  "global_generation_principles": [
+    "Never use an LLM for deterministic identifiers when an algorithmic generator (UUID/Faker) is available.",
+    "Generate dependent fields after their parent or conditioning fields.",
+    "Use explicit probability distributions (e.g. log-normal for currency) for statistical realism.",
+    "Use latent segments when multiple variables share behavioral dependencies.",
+    "Generate relational parent records before child records.",
+    "Calculate derived values deterministically instead of independently generating them.",
+    "Use LLMs primarily for semantic or unstructured natural language content.",
+    "Validate every generated batch before export.",
+    "Redact sensitive information before embedding.",
+    "Prefer hybrid retrieval and reranking for complex generation requests."
+  ]
+}

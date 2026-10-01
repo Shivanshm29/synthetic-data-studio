@@ -1,0 +1,56 @@
+name: 🐛 Bug Report
+description: File a bug report to help improve Synthetic Data Studio
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of Synthetic Data Studio or git commit are you running?
+      placeholder: e.g. main branch (commit abc1234)
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - Frontend (Next.js / UI)
+        - Backend (FastAPI)
+        - DataScout (Discovery / Fetch)
+        - Generation Engine (Faker / LLM / Strategies)
+        - RAG Knowledge Base
+        - Exporter (CSV / JSON / JSONL)
+        - Documentation / Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what the bug is.
+      placeholder: When generating 500 rows with prompt "...", an exception occurs in ...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Start backend with `uvicorn app.main:app`
+        2. In frontend, input "..."
+        3. Click "Generate Dataset"
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Log Output
+      description: Please copy and paste any relevant terminal output or browser console logs.
+      render: shell

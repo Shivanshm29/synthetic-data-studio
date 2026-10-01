@@ -216,3 +216,26 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+CLAUDE.md
+AGENTS.md
+
+# Project specific
+structure.txt
+hello.txt
+outputs/
+*.sqlite3
+*.db
+
+# Frontend & Node
+node_modules/
+.next/
+.turbo/
+*.tsbuildinfo
+.env*.local
+
+# System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.agents/

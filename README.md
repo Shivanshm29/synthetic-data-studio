@@ -11,7 +11,7 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB.svg?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-38B2AC.svg?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Shivanshm29/synthetic-data-studio/pulls)
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
@@ -116,9 +116,6 @@ synthetic-data-studio/
 ├── docs/                         # Extended documentation
 │   ├── ARCHITECTURE.md           # Deep architectural specification
 │   └── API_REFERENCE.md          # REST API endpoints & payload specifications
-├── CONTRIBUTING.md               # Contributing guidelines & workflow
-├── CODE_OF_CONDUCT.md            # Contributor Covenant Code of Conduct
-├── SECURITY.md                   # Security vulnerability disclosure policy
 ├── LICENSE                       # MIT License
 └── README.md                     # Project documentation (this file)
 ```
@@ -299,8 +296,7 @@ npm run build
 
 ## 🤝 Contributing
 
-We welcome community contributions, bug reports, and suggestions!
-Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting pull requests.
+Contributions, issues, and feature requests are welcome!
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feat/amazing-feature`)

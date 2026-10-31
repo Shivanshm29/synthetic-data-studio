@@ -1,6 +1,6 @@
 from openai import OpenAI
 import json
-from app.core.config import settings
+from app.core.config import settings, get_reliable_models
 
 
 class LLMGenerator:
@@ -14,11 +14,7 @@ class LLMGenerator:
         )
 
     def _get_models_to_try(self) -> list[str]:
-        models = [settings.LLM_MODEL]
-        # Only fallback to openrouter/auto if using openrouter host
-        if "openrouter.ai" in settings.LLM_BASE_URL:
-            models.append("openrouter/auto")
-        return models
+        return get_reliable_models()
 
     def generate_text(
         self,
@@ -86,4 +82,4 @@ class LLMGenerator:
                 results.append(self.generate_text(prompt))
             except Exception:
                 break
-        return results
+        return results

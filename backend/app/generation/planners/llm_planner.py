@@ -1,13 +1,11 @@
 from openai import OpenAI
 
-from app.core.config import settings
+from app.core.config import settings, get_reliable_models
 from app.domain.dataset import DatasetSpecification
 from app.generation.generation_plan import GenerationPlan
 from app.generation.planners.base_planner import BasePlanner
 from app.generation.planners.planner_schema import PlannerResponse
 from app.generation.planners.prompt_builder import PromptBuilder
-
-
 from app.generation.planners.rule_based_planner import RuleBasedPlanner
 
 
@@ -28,11 +26,7 @@ class LLMPlanner(BasePlanner):
     ) -> list[GenerationPlan]:
 
         messages = self._prompt_builder.build(dataset)
-
-        models_to_try = [
-            settings.LLM_MODEL,
-            "openrouter/auto",
-        ]
+        models_to_try = get_reliable_models()
 
         content = None
         for model in models_to_try:

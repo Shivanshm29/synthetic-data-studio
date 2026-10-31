@@ -73,7 +73,7 @@ class VectorStore:
         if self.client and settings.LLM_API_KEY:
             try:
                 # Try standard embedding models
-                models = ["text-embedding-3-small", "text-embedding-ada-002", settings.LLM_MODEL]
+                models = ["text-embedding-004", "text-embedding-3-small", "text-embedding-ada-002", settings.LLM_MODEL]
                 for model in models:
                     try:
                         res = self.client.embeddings.create(input=text, model=model)

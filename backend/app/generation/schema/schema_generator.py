@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-from app.core.config import settings
+from app.core.config import settings, get_reliable_models
 from app.domain.dataset import DatasetSpecification
 from app.generation.schema.schema_prompt import SchemaPromptBuilder
 from app.generation.schema.schema_response import SchemaResponse
@@ -76,9 +76,7 @@ class SchemaGenerator:
             rag_context=rag_context,
         )
 
-        models_to_try = [settings.LLM_MODEL]
-        if "openrouter.ai" in settings.LLM_BASE_URL:
-            models_to_try.append("openrouter/auto")
+        models_to_try = get_reliable_models()
 
         schema_obj = None
         for model in models_to_try:
@@ -124,4 +122,4 @@ class SchemaGenerator:
         if not schema_obj:
             raise ValueError("All schema generation LLM models failed or returned incomplete JSON.")
 
-        return schema_obj.dataset
+        return schema_obj.dataset

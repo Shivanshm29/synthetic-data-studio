@@ -1,10 +1,10 @@
-# ⚙ Synthetic Data Studio - Backend
+# Synthetic Data Studio - Backend Service
 
-High-performance Python backend powered by FastAPI, Pydantic v2, and hybrid AI/algorithmic synthetic generation engines.
+High-performance Python backend service built on FastAPI and Pydantic v2, featuring hybrid deterministic (Faker) and LLM-driven synthetic data generation pipelines, automated dataset discovery, and RAG-guided schema modeling.
 
 ---
 
-## 🏗 Architecture & Modules
+## Architecture & Modules
 
 ```
 backend/app/
@@ -41,54 +41,59 @@ backend/app/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 1. Create Environment
+### 1. Create and Activate Virtual Environment
 
 ```bash
+# Create virtual environment
 python -m venv .venv
+
 # On Windows:
 .venv\Scripts\Activate.ps1
-# On Linux/macOS:
+
+# On Linux / macOS:
 source .venv/bin/activate
 ```
 
-### 2. Install Requirements
+### 2. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configure `.env`
+### 3. Configure Environment Variables
 
-Copy `.env.example` to `.env` and provide your LLM API key:
+Copy `.env.example` to `.env` and configure your LLM provider credentials:
 
 ```bash
 cp .env.example .env
 ```
 
-Example for Google Gemini:
+**Recommended Configuration (Google Gemini):**
 ```env
 LLM_API_KEY=your_gemini_api_key_here
-LLM_MODEL=gemini-1.5-flash
+LLM_MODEL=gemini-2.5-flash
 LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
 ```
 
-### 4. Run Server
+> **Note on Model Selection**: `gemini-2.5-flash` provides the optimal balance of speed, cost efficiency, and structured output adherence. For demanding domain-specific reasoning, `gemini-2.5-pro` can also be specified. The backend includes automatic fallback mechanisms between verified production models.
+
+### 4. Start Development Server
 
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-Access OpenAPI documentation at:
+Interactive API documentation:
 - **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
 ---
 
-## 🧪 Running Tests
+## Running Verification Tests
 
-Execute the unit test suite:
+Run the full backend test suite:
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py"

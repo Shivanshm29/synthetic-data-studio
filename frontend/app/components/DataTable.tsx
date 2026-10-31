@@ -148,7 +148,7 @@ export default function DataTable({ rows, columns }: DataTableProps) {
                   colSpan={columns.length + 1}
                   className="px-5 py-8 text-center text-text-muted text-sm"
                 >
-                  No rows matched your search filter "{searchTerm}"
+                  No rows matched your search filter &quot;{searchTerm}&quot;
                 </td>
               </tr>
             )}

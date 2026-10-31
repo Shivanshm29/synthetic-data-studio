@@ -32,6 +32,10 @@ jobs:
 
       - name: Run Backend Unit Tests
         working-directory: ./backend
+        env:
+          LLM_API_KEY: mock-ci-test-key
+          LLM_MODEL: gemini-2.5-flash
+          LLM_BASE_URL: https://generativelanguage.googleapis.com/v1beta/openai/
         run: |
           python -m unittest discover -s tests -p "test_*.py"
 
@@ -53,6 +57,10 @@ jobs:
       - name: Install Frontend Dependencies
         working-directory: ./frontend
         run: npm ci
+
+      - name: Lint Frontend
+        working-directory: ./frontend
+        run: npm run lint
 
       - name: Type Check TypeScript
         working-directory: ./frontend
